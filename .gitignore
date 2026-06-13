@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Env & secrets
+.env
+.env.local
+.env.*.local
+
+# Runtime data (downloads, work queue, rendered clips, logs)
+data/
+downloads/
+clips/
+work/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
