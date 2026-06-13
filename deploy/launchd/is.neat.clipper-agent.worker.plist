@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  launchd service for the 24/7 clipper-agent worker on the Mac mini.
+
+  Install:
+    1. Build the project:        pnpm install && pnpm build
+    2. Edit the paths below      (WorkingDirectory, node path, project path).
+    3. Copy into place:          cp deploy/launchd/is.neat.clipper-agent.worker.plist ~/Library/LaunchAgents/
+    4. Load it:                  launchctl load ~/Library/LaunchAgents/is.neat.clipper-agent.worker.plist
+    5. Check status:             launchctl list | grep clipper-agent
+    6. Stop / unload:            launchctl unload ~/Library/LaunchAgents/is.neat.clipper-agent.worker.plist
+
+  KeepAlive restarts the worker on crash or after a reboot. The worker handles
+  SIGTERM for a clean shutdown, so launchctl unload stops it gracefully.
+-->
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>is.neat.clipper-agent.worker</string>
+
+    <key>ProgramArguments</key>
+    <array>
+      <string>/opt/homebrew/bin/node</string>
+      <string>/Users/REPLACE_ME/clipper-agent/dist/cli/index.js</string>
+      <string>worker</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/REPLACE_ME/clipper-agent</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>LOG_FORMAT</key>
+      <string>json</string>
+      <key>NODE_ENV</key>
+      <string>production</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/REPLACE_ME/clipper-agent/data/logs/worker.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/REPLACE_ME/clipper-agent/data/logs/worker.err.log</string>
+
+    <!-- Prevent App Nap / idle sleep from pausing the long-running worker. -->
+    <key>ProcessType</key>
+    <string>Background</string>
+  </dict>
+</plist>

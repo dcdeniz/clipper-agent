@@ -108,6 +108,14 @@ export class ReviewStore {
     });
   }
 
+  /** Mark an (approved) clip as published once it has gone out to platforms. */
+  async markPublished(id: string): Promise<Clip> {
+    return this.decide(id, (record) => {
+      record.clip.status = 'published';
+      record.decidedAt = new Date().toISOString();
+    });
+  }
+
   private async decide(id: string, fn: (record: ReviewRecord) => void): Promise<Clip> {
     const data = await this.read();
     const record = data.records.find((r) => r.clip.id === id);
